@@ -1,5 +1,8 @@
-# app03
-
+# CloudMusic
+## api 
+```
+https://binaryify.github.io/NeteaseCloudMusicApi/#/
+```
 ## Project setup
 ```
 yarn install
