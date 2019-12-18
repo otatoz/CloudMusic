@@ -3,7 +3,8 @@ import {setToken,clearToken} from '../../utils/index'
 export default {
   namespaced:true,
   state: {
-    avatarUrl:{}
+    avatarUrl:{},
+    catList:[]
   },
   getters:{
     
@@ -11,9 +12,23 @@ export default {
   mutations: {
     refreshAvatar(state,avatarUrl){
         state.avatarUrl = avatarUrl;
+    },
+    refreshCatList(state,catList){
+      state.catList = catList;
     }
   },
   actions: {
+    // 歌单分类
+    async catListHandler(context){
+      let res = await post('/playlist/catlist')
+      context.commit('refreshCatList',res.data)
+      console.log(res.data.sub)
+    },
+
+
+
+
+
     // 验证验证码
     async checkMessage(context,params){
       let res = await post('/captcha/verify',params)

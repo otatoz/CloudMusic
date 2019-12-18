@@ -246,13 +246,12 @@ export default {
         phone:this.registerData.phone,
         captcha:this.reviceMsg
       }
-      this.$router.push({
-          path:'/'
+      this.checkMessage(obj).then((res)=>{
+        this.$router.push({
+          path:'/about'
         })
         this.registerModal = false;
-      // this.checkMessage(obj).then((res)=>{
-        
-      // })
+      })
     },
 
     // 发送验证码

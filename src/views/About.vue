@@ -20,7 +20,7 @@
         <el-menu-item><img class="userImg" :src="avatarUrl" @click="layoutHandler"></el-menu-item>
       </el-menu>
     </div>
-
+    {{catList.sub[0]}}
     <!-- 轮播图 -->
     <div class="imgContent">
       <template>
@@ -155,13 +155,19 @@ export default {
     }
   },
   computed:{
-    ...mapState('home',['avatarUrl'])
+    ...mapState('home',['avatarUrl','catList'])
   },
   created(){
-    
+    // 歌单分类
+    this.catListHandler()
   },
   methods:{
-    ...mapActions('home',['login','layout']),
+    ...mapActions('home',['login','layout','catListHandler']),
+   
+
+
+
+
     // 退出登录
     layoutHandler(){
       this.layout().then((res)=>{
@@ -170,11 +176,7 @@ export default {
         })
       })
     },
-
-
-
-
-
+    
     // 登录模态框切换
     backToLogin(){
       this.dialogVisible = true;
