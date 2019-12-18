@@ -1,5 +1,5 @@
 # CloudMusic
-##使用api 
+##api 
 ```
 https://binaryify.github.io/NeteaseCloudMusicApi/#/
 ```
