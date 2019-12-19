@@ -4,7 +4,8 @@ export default {
   namespaced:true,
   state: {
     avatarUrl:{},
-    catList:[]
+    catList:[],
+    playListDetail:[]
   },
   getters:{
     
@@ -15,16 +16,24 @@ export default {
     },
     refreshCatList(state,catList){
       state.catList = catList;
+    },
+    refreshPlayListDetail(state,playListDetail){
+      state.playListDetail = playListDetail;
     }
   },
   actions: {
     // 歌单分类
     async catListHandler(context){
-      let res = await post('/playlist/catlist')
-      context.commit('refreshCatList',res.data)
-      console.log(res.data.sub)
+      let res = await post('/top/playlist?limit=8&order=new')
+      context.commit('refreshCatList',res.data.playlists)
+      // console.log(res.data.playlists)
     },
 
+    // 歌单详情
+    async playListDetailHandler(context,params){
+      let res = await post('/playlist/detail',params)
+      context.commit('refreshPlayListDetail',res.data.playlist)
+    },
 
 
 

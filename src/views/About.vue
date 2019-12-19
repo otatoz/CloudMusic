@@ -17,10 +17,9 @@
         <el-menu-item index="6">下载客户端</el-menu-item>
         <el-input placeholder="音乐/视频/电台"></el-input>
         <input type="text" placeholder="创作者中心" disabled>
-        <el-menu-item><img class="userImg" :src="avatarUrl" @click="layoutHandler"></el-menu-item>
+        <el-menu-item><img class="userImg" :src="avatarUrl" @click="layoutHandler" title="退出登录"></el-menu-item>
       </el-menu>
     </div>
-    {{catList.sub[0]}}
     <!-- 轮播图 -->
     <div class="imgContent">
       <template>
@@ -48,12 +47,17 @@
           <!-- 新歌推荐 -->
           <div class="content-card">
             <el-row>
-              <el-col :span="8" v-for="(item, index) in recommendImg" :key="index">
+              <el-col :span="8" v-for="(item, index) in catList" :key="index">
                 <el-card :body-style="{ padding: '10px 40px' }">
-                  <img :src="item.src" class="image">
-                  <div style="padding: 14px 0;">
-                    <div class="bottom clearfix">
-                      <time class="time">最新华语音乐推荐</time>
+                  <img :src="item.coverImgUrl" class="image" style="height:210px;width:100%;" @click="toPlayDetail(item.id)">
+                  <div class="nickName"> 
+                    <img src="../assets/nickImg.png" alt="">
+                    <span>{{item.name}}</span>
+                  </div>
+                  <div style="padding: 10px 0;">
+                    <div class="bottom clearfix" style="text-align:center;height:21px;overflow:hidden;">
+                      <time class="time" v-if="item.description == null">暂无描述</time>
+                      <time class="time" else :title="item.description">{{item.description}}</time>
                     </div>
                   </div>
                 </el-card>
@@ -155,16 +159,22 @@ export default {
     }
   },
   computed:{
-    ...mapState('home',['avatarUrl','catList'])
+    ...mapState('home',['avatarUrl','catList','playListDetail'])
   },
   created(){
     // 歌单分类
     this.catListHandler()
   },
   methods:{
-    ...mapActions('home',['login','layout','catListHandler']),
-   
-
+    ...mapActions('home',['login','layout','catListHandler','playListDetailHandler']),
+    // 歌单详情
+    toPlayDetail(id){
+      this.playListDetailHandler({id})
+      this.$router.push({
+        path:'/playList',
+        query:{id:id}
+      })
+    },
 
 
 
@@ -197,6 +207,7 @@ export default {
 </script>
 
 <style scoped>
+  /* 用户头像 */
   .userImg{
     height: 30px;
     border-radius: 100%;
@@ -224,6 +235,7 @@ export default {
     margin: 0 auto;
   }
   /* 榜单 */
+  
   .sourceList-content{
     padding:10px 20px;
     box-sizing: border-box;
@@ -241,9 +253,33 @@ export default {
   /* 推荐 */
   .content-card{
     margin-bottom: 40px;
+    margin-top: 10px;
+  }
+  .el-col >>> .el-card__body {
+    padding: 0 !important;
+  }
+  .nickName img{
+    height: 20px;
+    float: left;
+    margin-right: 5px;
+  }
+  .nickName:hover{
+    font-weight: bold;
+    color: #333;
+  }
+  .nickName{
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    color: white;
   }
   .el-col{
+    cursor: pointer;
+    margin-bottom: 60px;
     width:220px;
+    height: 215px;
+    position: relative;
+    box-sizing: border-box;
     margin-left: 8px;
     margin-right: 5px;
   }
