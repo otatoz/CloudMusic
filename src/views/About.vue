@@ -15,8 +15,8 @@
         <el-menu-item index="4">商城</el-menu-item>
         <el-menu-item index="5">音乐人</el-menu-item>
         <el-menu-item index="6">下载客户端</el-menu-item>
-        <el-input placeholder="音乐/视频/电台"></el-input>
-        <input type="text" placeholder="创作者中心" disabled>
+        <input type="text" class="searchInput" placeholder="音乐/视频/电台" v-model="searchData" @keyup.enter="toSearch">
+        <input type="text" placeholder="创作者中心" disabled class="createHome">
         <el-menu-item><img class="userImg" :src="avatarUrl" @click="layoutHandler" title="退出登录"></el-menu-item>
       </el-menu>
     </div>
@@ -107,6 +107,7 @@ import {mapActions,mapState} from 'vuex'
 export default {
   data(){
     return {
+      searchData:'',
       loginData:{},
       dialogFormVisible:false,
       dialogVisible: false,
@@ -167,16 +168,22 @@ export default {
   },
   methods:{
     ...mapActions('home',['login','layout','catListHandler','playListDetailHandler']),
+    // 搜索
+    toSearch(){
+      // 在搜索前,只需要将  关键字  通过路由携带到搜索完成页即可
+      this.$router.push({
+        path:'/search',
+        query:{keywords:this.searchData}
+      })
+    },
+
     // 歌单详情
     toPlayDetail(id){
-      this.playListDetailHandler({id})
       this.$router.push({
         path:'/playList',
         query:{id:id}
       })
     },
-
-
 
     // 退出登录
     layoutHandler(){
@@ -356,9 +363,6 @@ export default {
   .el-menu-item{
     line-height: 70px !important;
   }
-  .el-menu-item:first-child{
-    height: 
-  }
   .el-menu-item:last-child{
     position: absolute;
     right: 5%;
@@ -368,7 +372,7 @@ export default {
   .el-menu-item:hover{
     color: rgb(255, 208, 75) !important;
   }
-  .el-menu input{
+  .el-menu .createHome{
     width:80px;
     margin-top: 20px;
     margin-left: 20px;
@@ -379,18 +383,18 @@ export default {
     color: #ccc;
     text-align: center;
   }
-  .el-menu input:hover{
+  .el-menu .createHome:hover{
     border: 1px solid white;
     cursor: pointer;
     color: white;
   }
-  .el-input{
-    width:150px;
+  .searchInput{
+    width:140px;
+    border: none;
     margin-top: 20px;
-    margin-left: 50px;
-  }
-  .el-input >>> .el-input__inner{
-    border-radius: 20px !important;
+    margin-left: 40px;
+    text-align: center;
+    border-radius: 20px;
     height: 32px;
   }
 </style>

@@ -38,6 +38,23 @@
     </el-dialog>
 
 
+    <!-- 邮箱登录 -->
+    <el-dialog class="telephoneModal" title="邮箱登录" width="45%" :visible.sync="emailModal">
+      <el-form class="loginForm">
+        <el-form-item>
+          <el-input v-model="emailData.email" auto-complete="off" placeholder="请输入账号"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input v-model="emailData.password" auto-complete="off" placeholder="请输入密码"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="phoneLogin">
+        <el-button class="loginFormBtn" type="primary" plain @click="emailLoginHandler">登录</el-button>
+      </div>
+      <hr style="margin-bottom:20px;">
+      <div @click="backToAnthor" style="cursor:pointer"> < 其他方式登录</div>
+    </el-dialog>
+
 
     <!-- 注册 -->
     <el-dialog class="telephoneModal" title="注册" width="45%" :visible.sync="registerModal">
@@ -81,7 +98,7 @@
             <div class="loginImg"><img src="../assets/weixin.png" alt=""><span>微信登录</span></div>
             <div class="loginImg"><img src="../assets/qq.png" alt=""><span>qq登录</span></div>
             <div class="loginImg"><img src="../assets/weibo.png" alt=""><span>微博登录</span></div>
-            <div class="loginImg"><img src="../assets/wangyi0.png" alt=""><span>网易邮箱账号登录</span></div>
+            <div class="loginImg"><img src="../assets/wangyi0.png" alt=""><span @click="showEmailModal">网易邮箱账号登录</span></div>
           </div>
         </div>
         <div class="loginBottom" style="font-size:12px;margin-top:20px;">
@@ -178,8 +195,10 @@ export default {
   data(){
     return {
       reviceMsg:'',
+      emailData:{},
       registerData:{},
       loginData:{},
+      emailModal:false,
       registerModal:false,
       phoneModal:false,
       loginModal: false,
@@ -238,7 +257,19 @@ export default {
     
   },
   methods:{
-    ...mapActions('home',['login','sendMessage','checkMessage']),
+    ...mapActions('home',['login','sendMessage','checkMessage','emailHandler']),
+
+    // 邮箱登录
+    emailLoginHandler(){
+      this.emailHandler(this.emailData).then((res)=>{
+        this.$router.push({
+          path:'/about'
+        }),
+        this.emailModal = false;
+        this.loginModal = false;
+      })
+    },
+
     
     // 验证验证码
     nextHandler(){
@@ -277,6 +308,14 @@ export default {
 
 
     // 登录模态框切换
+    showEmailModal(){
+      this.emailModal = true;
+    },
+    backToAnthor(){
+      this.emailModal = false;
+      this.loginModal = true;
+    },
+
     toRegisterHandler(){
       this.registerModal = true;
     },

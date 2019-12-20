@@ -3,8 +3,6 @@ import VueRouter from 'vue-router'
 
 // 首页
 import Home from '../views/Home.vue'
-// 歌单详情页
-// import PlayList from '../views/playList/PlayList'
 
 import store from '../store'
 import {getToken} from '../utils/index'
@@ -42,6 +40,11 @@ const routes = [
     name: 'playList',
     component: () => import('../views/playList/PlayList'),
   },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('../views/Search'),
+  }
 ]
 
 const router = new VueRouter({

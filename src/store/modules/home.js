@@ -5,7 +5,9 @@ export default {
   state: {
     avatarUrl:{},
     catList:[],
-    playListDetail:[]
+    playListDetail:[],
+    musicUrl:'',
+    singerSongList:[]
   },
   getters:{
     
@@ -19,9 +21,23 @@ export default {
     },
     refreshPlayListDetail(state,playListDetail){
       state.playListDetail = playListDetail;
+    },
+    refreshUrl(state,musicUrl){
+      state.musicUrl = musicUrl;
+    },
+    refreshSingerSongList(state,singerSongList){
+      state.singerSongList = singerSongList
     }
   },
   actions: {
+    // 搜索
+    async searchHandler(context,params){
+      let res = await post('/search',params)
+      context.commit('refreshSingerSongList',res.data.result)
+      return res
+    },
+
+
     // 歌单分类
     async catListHandler(context){
       let res = await post('/top/playlist?limit=8&order=new')
@@ -35,9 +51,19 @@ export default {
       context.commit('refreshPlayListDetail',res.data.playlist)
     },
 
+    // 歌曲详情 ---  通过歌曲id获取播放地址url
+    async musicUrlHandler(context,params){
+      let res = await post('/song/url',params)
+      context.commit('refreshUrl',res.data.data[0].url)
+    },
 
-
-
+    // 邮箱登录
+    async emailHandler(context,params){
+      let res = await post('/login',params)
+      let id = res.data.account.id
+      context.dispatch('detail',id)
+      setToken(id)
+    },
     // 验证验证码
     async checkMessage(context,params){
       let res = await post('/captcha/verify',params)

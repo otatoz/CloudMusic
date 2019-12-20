@@ -30,22 +30,56 @@
                     <img :src="playListDetail.coverImgUrl" alt="">
                 </div>
                 <div class="listDetails_right">
-                    <div>
+                    <div class="listDetails_desc">
                         {{xpf.description}}
                     </div>
-                    <div class="listDetails_avaUrl">
-                        <img :src="xpf.avatarUrl" alt="">
+                    <div class="listDetails_content">
+                      <div class="listDetails_avaUrl">
+                          <img :src="xpf.avatarUrl" alt="">
+                      </div>
+                      <div class="listDetails_nickName">
+                          {{xpf.nickname}}
+                      </div>
+                      <div class="listDetails_createTime">
+                          {{playListDetail.createTime}}
+                      </div>
                     </div>
-                    <div>
-                        {{xpf.nickname}}
-                    </div>
-                    <div>
-                        {{playListDetail.createTime}}
+                    <div class="listDetails_tag">
+                      标签:
+                      <el-tag v-for="item in playListDetail.tags" :key="item.id">{{item}}</el-tag>
                     </div>
                 </div>
             </div>
-            <div class="listSong">
+            <video id="xpf" class="video-js" :src="urlArr[0]" autoplay controls preload="auto" width="60px" height="70px" type='video/mp4'></video>
 
+            <div class="listSong">
+                <template>
+                  <el-table
+                    :data="playListDetail.tracks"
+                    style="width: 100%">
+                    <el-table-column
+                      prop="name"
+                      label="歌曲标题">
+                    </el-table-column>
+                    
+                    <el-table-column
+                      prop="ar[0].name"
+                      label="歌手">
+                    </el-table-column>
+                    <el-table-column
+                      prop="al.name"
+                      label="专辑">
+                    </el-table-column>
+                    <el-table-column
+                      fixed="right"
+                      label="操作"
+                      width="100">
+                      <template slot-scope="scope">
+                        <el-button @click="playMusic(scope.row.id)" type="text" size="small">播放</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
             </div>
         </div>
       </div>
@@ -75,12 +109,13 @@ export default {
   data(){
     return {
       xpf:[],
+      urlArr:[],
       activeIndex: '1',
       activeIndex2: '1',
     }
   },
   computed:{
-    ...mapState('home',['avatarUrl','playListDetail'])
+    ...mapState('home',['avatarUrl','playListDetail','musicUrl'])
   },
   created(){
       let obj = {
@@ -92,8 +127,19 @@ export default {
   },
 
   methods:{
-    ...mapActions('home',['login','layout','playListDetailHandler']),
+    ...mapActions('home',['login','layout','playListDetailHandler','musicUrlHandler']),
 
+
+    // 播放音乐
+    playMusic(item){
+      let obj = {
+        id:item
+      }
+      this.musicUrlHandler(obj).then((res)=>{
+        this.urlArr = [];
+        this.urlArr.push(this.musicUrl)
+      })
+    },
 
     // 回到首页
     toHome(){
@@ -114,24 +160,56 @@ export default {
 </script>
 
 <style scoped>
-  .listDetails_avaUrl img{
-      height: 80px;
+  .el-tag{
+    margin-left: 10px;
+    cursor: pointer;
   }
-  .listDetails_right div{
-      display: inline-block;
+  .el-tag:hover{
+    color: #333;
+  }
+  .listDetails_tag{
+    margin-top: 10px;
+  }
+  .listDetails_desc{
+    margin-bottom: 10px;
+    display: block;
+  }
+  .listDetails_avaUrl img{
+      height: 40px;
+  }
+  .listDetails_content{
+    height: 40px;
+  }
+  .listDetails_content div{
+    float: left;
+  }
+  
+  .listDetails_createTime{
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+  .listDetails_nickName{
+    color: blue;
+    margin-top: 8px;
+    margin-left: 10px;
   }
   .listDetails_right{
       margin-left: 20px;
+      position: absolute;
+      top:0;
   }
   .listDetails_img,.listDetails_right{
       display: inline-block;
+  }
+  .listDetails{
+    position: relative;
   }
   .listDetails_img img{
       height: 208px;
       width: 208px;
   }
   .padding-content{
-    margin: 20px 20px;
+    margin: 40px 30px;
   }
   .recommended-content{
     width: 980px;
